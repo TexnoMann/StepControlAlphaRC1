@@ -49,6 +49,12 @@ void StepControl::moveToDistance(int mm){
 	moveTo(_mm*_feth);
 }
 
+void StepControl::go(boolean g){
+	_g=g;
+	if(_g) moveTo(1);
+	else moveTo(-1);
+}
+
 
 
 
