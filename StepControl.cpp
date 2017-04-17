@@ -26,15 +26,15 @@ void StepControl::moveTo(int degrees){
 	
 		if(_degrees>0){
 			digitalWrite(_dirpin, HIGH);
-	  		for(i=0;i<degrees; i++){
+	  		for(i=0;i<_degrees; i++){
 				digitalWrite(_steppin, HIGH);
 	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
 	  		}
 	  	}
 	  	else{
-	  		digitalWrite(_dirpin, HIGH);
-	  		for(i=0;i>degrees; i--){
+	  		digitalWrite(_dirpin, LOW);
+	  		for(i=0;i>_degrees; i--){
 				digitalWrite(_steppin, HIGH);
 	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
