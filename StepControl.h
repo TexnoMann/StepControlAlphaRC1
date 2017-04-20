@@ -8,9 +8,10 @@
  		void setSpeeds(int speeds);
 	 	void moveTo(int degrees);
 	 	void moveToDistance(int mm);
-	 	void go(boolean g);
+	 	void setAcceleration(int accel);
  	private:
- 		boolean _g;
+ 		int setCurrentSpeeds(int step);
+ 		void delayMs(int steps);
  		int _mm;
  		int _feth;
  		int _enpin;
@@ -20,6 +21,8 @@
  		int _speeds;
  		int microsstep;
  		int i;
+ 		int _accel;
+ 		int currentspeeds;
 
  };
 #endif
