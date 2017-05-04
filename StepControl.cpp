@@ -6,50 +6,56 @@ StepControl::StepControl(int en, int step, int dir, int feth){
 	_enpin=en;
 	_steppin=step;
 	_dirpin=dir;
-	microsstep=0;
-	i=0;
-	_speeds=0;
-	currentspeeds=0;
-	_accel=0;
+	microsstep=1000;
+	_minspeeds=2000;
+	_curspeeds=_minspeeds;
+	i=0L;
+	_accel=1000;
+	_speeds=400;
 	pinMode(_enpin, OUTPUT);
 	pinMode(_dirpin,OUTPUT);
 	pinMode(_steppin,OUTPUT);
 	digitalWrite(_enpin, LOW);
 }
 
-void StepControl::setSpeeds(int speeds){
-	_speeds=speeds;
-}
-int StepControl::setCurrentSpeeds(int step){
-	currentspeeds=100+_accel*step;
-	if (currentspeeds>_speeds) currentspeeds=_speeds;
-	microsstep= 1000000/currentspeeds;
-	return microsstep;
-}
-
 void StepControl::setAcceleration(int accel){
 	_accel=accel;
 }
+void StepControl::setMinSpeeds(int minspeeds){
+	_minspeeds=minspeeds;
+}
 
-void StepControl::moveTo(int degrees){
+void StepControl::setSpeeds(int speeds){
+	_speeds=speeds;
+	microsstep= 1000000/_speeds;
+}
+
+void StepControl::setCurSpeeds(){
+	if(_curspeeds!=_speeds) _curspeeds+=_accel;
+	if(_curspeeds>_speeds) _curspeeds=_speeds;
+	microsstep= 1000000/_curspeeds;
+}
+
+void StepControl::moveTo(long long degrees){
 	_degrees= degrees;
-	currentspeeds=0;
+	_curspeeds=_minspeeds;
 	if(_degrees!=0){
 	
 		if(_degrees>0){
-			
 			digitalWrite(_dirpin, HIGH);
-	  		for(i=0;i<_degrees; i++){
+	  		for(i=0L;i<_degrees; i++){
 				digitalWrite(_steppin, HIGH);
-	  			delayMs(i);
+				setCurSpeeds();
+	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
 	  		}
 	  	}
 	  	else{
 	  		digitalWrite(_dirpin, LOW);
-	  		for(i=0;i>_degrees; i--){
+	  		for(i=0L;i>_degrees; i--){
 				digitalWrite(_steppin, HIGH);
-	  			delayMs(i);
+				setCurSpeeds();
+	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
 	  		}
 		  }
@@ -57,15 +63,30 @@ void StepControl::moveTo(int degrees){
 	}
 }
 
-void StepControl::moveToDistance(int mm){
+void StepControl::moveToDistance(double mm){
 	_mm=mm;
-	moveTo(_mm*_feth);
+	_degrees=_mm*_feth;
+	moveTo(_degrees);
 }
 
-void StepControl:: delayMs(int steps){
-	delayMicroseconds(setCurrentSpeeds(steps)); 
-} 
-
+void StepControl::go(boolean g){
+	_g=g;
+	if(_g) {
+		digitalWrite(_dirpin, HIGH);
+		digitalWrite(_steppin, HIGH);
+		microsstep= 1000000/_speeds;
+	  	delayMicroseconds(microsstep); 
+	  	digitalWrite(_steppin, LOW);
+	  }
+	
+	else {
+		digitalWrite(_dirpin, LOW);
+		digitalWrite(_steppin, HIGH);
+		microsstep= 1000000/_speeds;
+	  	delayMicroseconds(microsstep); 
+	  	digitalWrite(_steppin, LOW);
+	  }
+}
 
 
 

@@ -6,23 +6,26 @@
  	public:
  		StepControl(int en, int step, int dir, int feth);
  		void setSpeeds(int speeds);
-	 	void moveTo(int degrees);
-	 	void moveToDistance(int mm);
-	 	void setAcceleration(int accel);
+ 		void setAcceleration(int accel);
+ 		void setMinSpeeds(int minspeeds);
+	 	void moveTo(long long degrees);
+	 	void moveToDistance(double mm);
+	 	void go(boolean g);
  	private:
- 		int setCurrentSpeeds(int step);
- 		void delayMs(int steps);
- 		int _mm;
+ 		int _minspeeds;
+ 		int _accel;
+ 		void setCurSpeeds();
+ 		int _curspeeds;
+ 		boolean _g;
+ 		double _mm;
  		int _feth;
  		int _enpin;
  		int _steppin;
  		int _dirpin;
- 		int _degrees;
+ 		long long _degrees;
  		int _speeds;
  		int microsstep;
- 		int i;
- 		int _accel;
- 		int currentspeeds;
+ 		long long i;
 
  };
 #endif
