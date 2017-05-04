@@ -7,7 +7,7 @@ StepControl::StepControl(int en, int step, int dir, int feth){
 	_steppin=step;
 	_dirpin=dir;
 	microsstep=1000;
-	i=0;
+	i=0L;
 	_speeds=400;
 	pinMode(_enpin, OUTPUT);
 	pinMode(_dirpin,OUTPUT);
@@ -20,13 +20,13 @@ void StepControl::setSpeeds(int speeds){
 	microsstep= 1000000/_speeds;
 }
 
-void StepControl::moveTo(int degrees){
+void StepControl::moveTo(long long degrees){
 	_degrees= degrees;
 	if(_degrees!=0){
 	
 		if(_degrees>0){
 			digitalWrite(_dirpin, HIGH);
-	  		for(i=0;i<_degrees; i++){
+	  		for(i=0L;i<_degrees; i++){
 				digitalWrite(_steppin, HIGH);
 	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
@@ -34,7 +34,7 @@ void StepControl::moveTo(int degrees){
 	  	}
 	  	else{
 	  		digitalWrite(_dirpin, LOW);
-	  		for(i=0;i>_degrees; i--){
+	  		for(i=0L;i>_degrees; i--){
 				digitalWrite(_steppin, HIGH);
 	  			delayMicroseconds(microsstep); 
 	  			digitalWrite(_steppin, LOW);
@@ -44,9 +44,10 @@ void StepControl::moveTo(int degrees){
 	}
 }
 
-void StepControl::moveToDistance(int mm){
+void StepControl::moveToDistance(double mm){
 	_mm=mm;
-	moveTo(_mm*_feth);
+	_degrees=_mm*_feth;
+	moveTo(_degrees);
 }
 
 void StepControl::go(boolean g){
