@@ -2,6 +2,8 @@
 #include "StepControl.h"
 
 StepControl::StepControl(int en, int step, int dir, int feth){
+	_degrees=0L;
+	_mm=0L;
 	_feth=feth;
 	_enpin=en;
 	_steppin=step;
